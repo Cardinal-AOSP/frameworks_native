@@ -4448,8 +4448,14 @@ void SurfaceFlinger::renderScreenImplLocked(
         sourceCrop = tr.transform(sourceCrop);
     }
 
-    const bool filtering = static_cast<int32_t>(reqWidth) != sourceCrop.width() ||
-            static_cast<int32_t>(reqHeight) != sourceCrop.height();
+    bool filtering = false;
+    if (mHwOrientation & DisplayState::eOrientationSwapMask) {
+        filtering = static_cast<int32_t>(reqWidth) != sourceCrop.width() ||
+                static_cast<int32_t>(reqHeight) != sourceCrop.height();
+    } else {
+        filtering = static_cast<int32_t>(reqWidth) != sourceCrop.width() ||
+                static_cast<int32_t>(reqHeight) != sourceCrop.height();
+    }
 
     // ensure that sourceCrop is inside screen
     if (sourceCrop.left < 0) {
